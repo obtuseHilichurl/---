@@ -147,6 +147,8 @@ print(outputs[0]["generated_text"][len(prompt):])
 
 ​	搭建好ssh隧道后，在服务器中输入llamafactory-cli webui[^12] ，它会返回一段URLhttp://0.0.0.0:7860，不用管它，在本地浏览器输入http://localhost:7860/就可以访问了（==可能需要有卡模式才可以正常运作==）。如果需要中断这个URL服务，在服务器中按ctrl+c即可。
 
+​	==注意：目前webui版本只支持单机单卡，如果是多卡请使用命令行版本==
+
 ---
 
 ### 上传文件
@@ -202,6 +204,8 @@ print(outputs[0]["generated_text"][len(prompt):])
 llamafactory-cli train [yaml文件绝对路径路径]
 ~~~
 
+​	微调技术有许多，这里就不一一展开了。[教程1](https://blog.csdn.net/chengxuyuanyy/article/details/141320159)、[教程2](https://zhuanlan.zhihu.com/p/673789772)、[教程3](https://blog.csdn.net/SHIDACSDN/article/details/139933921)、[教程4](https://zhuanlan.zhihu.com/p/990958034)。
+
 ---
 
 ### 检验结果
@@ -209,6 +213,8 @@ llamafactory-cli train [yaml文件绝对路径路径]
 ​	在WebUI界面中，选择chat(之前的train是训练)可以加载模型与其对话，进行模型检验。可以通过对比训练前后的效果来判断模型能力是否提升，检查点路径这一项就是微调的参数。先问一些常识性的问题，比如1+1、天空为什么是蓝色、你是谁之类的问题，检测模型是否在训练后丧失了普通的对话能力；再问一些数据集里有的问题，检测模型的回答是否有提升，提升又如何。
 
 ​	除了用对话的方式检验，还可以选择Evaluate&Predict。llama factory提供了专门的评估方法进行模型评估，但结果需要一定知识才能看得明白，当然直接问ChatGPT评估结果是什么意思，效果好不好，也是可以的。
+
+​	详细的检验方法可以参考[教程](https://zhuanlan.zhihu.com/p/18593955786)。
 
 ---
 
@@ -219,6 +225,8 @@ llamafactory-cli train [yaml文件绝对路径路径]
 ​	官方声明：==运行7B的模型，RAM至少需要8GB显存==，那么更大的模型就更难部署了，需要看本地配置如何。
 
 ​	对于导出后的模型，虽然可以直接通过llama factory进行对话，但对于普通人员操控起来还是比较麻烦一点的。我们可以使用一些软件比如[LangChain](https://docs.langchain.com.cn/docs/introduction/)、[ollama](https://github.com/ollama/ollama)等对其进行管理。虽然笔者在网上收集了使用ollama导入模型的教程(见下文补充)，但在过程中遇到了问题[^13]，暂时没有解决。最终决定还是用llama factory进行本地部署。只需要稍微修改一下配置文件就行，但这必须要在本地支持gpu加速才能正常运行。
+
+​	另，对于训练好的大模型，如果规模太大难以部署，可以尝试对它进行[模型压缩](https://blog.csdn.net/2401_86435672/article/details/142737928)。
 
 ---
 
@@ -231,7 +239,7 @@ llamafactory-cli train [yaml文件绝对路径路径]
 
 ### 补充：ollama使用(可能有误)
 
-​	ollama安装与使用教程网上有许多教程，记得改模型存储位置，不然默认c盘。
+​	ollama安装与使用教程网上有许多教程，笔者看的有：[教程1](https://datawhalechina.github.io/handy-ollama/#/)、[教程2](https://github.com/ollama/ollama)、[教程3](https://blog.csdn.net/qq_42987058/article/details/144598371)。记得改模型存储位置([教程4](https://blog.csdn.net/youeyeb/article/details/144905333)、[教程5]((https://cloud.baidu.com/article/3368776)))，不然默认c盘。
 
 ​	ollama[导入模型](https://github.com/ollama/ollama/blob/main/docs/import.md)：由于Llama3-8B-Chinese-Chat的权重文件是以safetensors文件格式进行存储，而ollama需要权重文件以gguf格式存储[^15]，所以还需要安装llama.cpp进行[模型转化 ](https://blog.csdn.net/arkohut/article/details/140087605),[对应视频讲解](https://www.bilibili.com/video/BV1Mm42157HB)。==如果选用的模型的参数是以gguf格式存储的，则只需要编写modelfile文件即可。==
 
